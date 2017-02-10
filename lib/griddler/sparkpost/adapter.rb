@@ -13,22 +13,25 @@ module Griddler
       end
 
       def normalize_params
-        msg = params['_json'][0]['msys']['relay_message']
-        content = msg['content']
-        mail = Mail.read_from_string(content['email_rfc822'])
-        # SparkPost documentation isn't clear on friendly_from.
-        # In case there's a full email address (e.g. "Test User <test@test.com>"), strip out junk
-        clean_from = msg['friendly_from'].split('<').last.delete('>').strip
-        params.merge(
-          to: content['to'],
-          from: clean_from,
-          cc: content['cc'].nil? ? [] : content['cc'],
-          subject: content['subject'],
-          text: content['text'],
-          html: content['html'],
-          headers: headers_raw(content['headers']), # spec calls for raw headers, so convert back
-          attachments: attachment_files(mail)
-        )
+        beging
+          msg = params['_json'][0]['msys']['relay_message']
+          content = msg['content']
+          mail = Mail.read_from_string(content['email_rfc822'])
+          # SparkPost documentation isn't clear on friendly_from.
+          # In case there's a full email address (e.g. "Test User <test@test.com>"), strip out junk
+          clean_from = msg['friendly_from'].split('<').last.delete('>').strip
+          params.merge(
+            to: content['to'],
+            from: clean_from,
+            cc: content['cc'].nil? ? [] : content['cc'],
+            subject: content['subject'],
+            text: content['text'],
+            html: content['html'],
+            headers: headers_raw(content['headers']), # spec calls for raw headers, so convert back
+            attachments: attachment_files(mail)
+          )
+        rescue
+        end
       end
 
       private
