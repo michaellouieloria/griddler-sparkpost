@@ -13,7 +13,7 @@ module Griddler
       end
 
       def normalize_params
-        beging
+        begin
           msg = params['_json'][0]['msys']['relay_message']
           content = msg['content']
           mail = Mail.read_from_string(content['email_rfc822'])
